@@ -11,6 +11,9 @@ class CreateNotificationsTable extends Migration
      */
     public function up(): void
     {
+        $notifiableClass = config('fcm.notifiable.model');
+        $notifiableTable = (new $notifiableClass())->getTable();
+
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->string('notification_type');
@@ -32,12 +35,12 @@ class CreateNotificationsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('user_notifications', function (Blueprint $table) {
+        Schema::create('user_notifications', function (Blueprint $table) use ($notifiableTable) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')
                   ->references(config('fcm.notifiable.id'))
-                  ->on(config('fcm.notifiable.model'))
+                  ->on($notifiableTable)
                   ->onDelete('cascade');
                   
             $table->unsignedBigInteger('notification_id')->nullable();
@@ -52,10 +55,13 @@ class CreateNotificationsTable extends Migration
             $table->timestamps();
         });
         
-        Schema::create('login', function (Blueprint $table) {
+        Schema::create('login', function (Blueprint $table) use ($notifiableTable) {
             $table->id('id');
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('user_id')->references(config('fcm.notifiable.id'))->on(config('fcm.notifiable.model'));
+            $table->foreign('user_id')
+                ->references(config('fcm.notifiable.id'))
+                ->on($notifiableTable)
+                ->onDelete('cascade');
             $table->string('imei')->nullable();
             $table->string('os')->nullable();
             $table->text('token')->nullable();

@@ -21,16 +21,15 @@ return [
         'timeout' => 30.0, // in second
     ],
     'huawei' => [
-        'app_id' => env('HUAWEI_APP_ID'),
-        'app_secret' => env('HUAWEI_APP_SECRET'),
+        'app_id' => env('HUAWEI_APP_ID', 'YOUR HUAWEI APP ID'),
+        'app_secret' => env('HUAWEI_APP_SECRET', 'YOUR APP SECRET ID'),
         'url_auth' => 'https://login.vmall.com/oauth2/token',
         'grant_type' => 'client_credentials',
         'notify_url' => 'https://push-api.cloud.huawei.com/v1/',
         'notify_action' => 'messages:send',
     ],
     'notifiable' => [
-        'model' => App\Models\User::class,
-        'table' => env('FCM_USER_TABLE', 'users'),
+        'model' => env('FCM_MODEL', "App\Models\User"),
         'id' => env('FCM_USER_ID', 'id'),
     ]
 ];
